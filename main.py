@@ -412,8 +412,7 @@ def run_drug_design_rl(api_key: str, n_generations: int = 20, n_molecules_per_ge
 # ---------------------------
 if __name__ == "__main__":
     # Set your Gemini API key
-    GEMINI_API_KEY = "YOUR_API_KEY_HERE"
-    
+    GEMINI_API_KEY = "AIzaSyBpOg1ccrnhEXyx62sLhZLXBvF3X_bY_TE"
     if not GEMINI_API_KEY:
         print("Please set your GEMINI_API_KEY environment variable")
         print("You can get an API key from: https://makersuite.google.com/app/apikey")
