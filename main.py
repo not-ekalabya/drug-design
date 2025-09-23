@@ -98,116 +98,46 @@ class GeminiDrugDesigner:
         
         # Enhanced prompt with step-by-step reasoning requirement
         base_prompt = f"""
-        You are an AI drug designer creating novel small molecules for pharmaceutical applications.
+TASK: Design novel small-molecule inhibitors of plasma kallikrein (KLKB1) 
+for oral on-demand therapy in hereditary angioedema (HAE).
 
-CRITICAL INSTRUCTIONS FOR RESPONSE FORMAT:
-1. First, show your reasoning step by step
-2. Then provide exactly {n_molecules} SMILES strings in this format:
-   SMILES: [your_smiles_here]
-3. Each SMILES must be on a separate line with the "SMILES:" prefix
+BACKGROUND ON PREVIOUS DRUG CLASSES:
+- Ecallantide: a peptide-based inhibitor. It is potent but not orally bioavailable. 
+  Large peptides tend to have poor absorption, so avoid peptide-like scaffolds.
+- Lanadelumab: a monoclonal antibody. Highly effective for prophylaxis but 
+  unsuitable as a small-molecule oral drug.
+- Earlier small-molecule inhibitors often relied on basic amidine or guanidine 
+  scaffolds that bound strongly to the protease active site. These showed potency 
+  but poor selectivity across serine proteases and weak oral bioavailability.
 
-THERAPEUTIC TARGET AND BIOLOGY:
+WHAT THIS MEANS FOR DESIGN:
+- We need new scaffolds beyond peptides and antibodies. 
+- Amidine- or guanidine-based scaffolds are acceptable starting points, 
+  but the model should also explore alternative heteroaromatic or amide-linked 
+  scaffolds that can provide potency without compromising oral drug-like properties.
 
-TARGET: Dual Orexin Receptor Antagonist for Sleep Disorders
+DESIRED PROPERTY PROFILE:
+- Potency: nanomolar inhibition (target Ki or IC50 ≈ 1–10 nM).
+- Molecular weight: 350–550 Da (drug-like range)
+- LogP: ~1.5–3.5 (balance solubility and permeability).
+- Polar surface area (TPSA): < 120 Å² for absorption.
+- Solubility and permeability: sufficient for fast onset.
+- Bioavailability: > 50%.
+- Low CYP450 inhibition.
+- High selectivity versus other serine proteases.
 
-BIOLOGICAL BACKGROUND:
-The orexin system plays a crucial role in regulating sleep-wake cycles. Two orexin receptors (OX1R and OX2R) are G-protein coupled receptors (GPCRs) that bind orexin neuropeptides (orexin-A and orexin-B). These receptors are primarily located in the hypothalamus and are critical for maintaining wakefulness.
+REQUIREMENTS:
+1. Propose at least 3 different scaffold families (e.g., amidine-like, heteroaromatic 
+   cores, amide-linked frameworks).
+2. For each scaffold family, explain in 2–3 sentences how its chemistry could 
+   improve potency, selectivity, or PK compared to past approaches.
+3. For each scaffold, generate 2–3 example molecules as valid SMILES strings.
+4. Ensure molecules are synthetically plausible and drug-like.
 
-MECHANISM OF ACTION:
-- Orexin receptors promote wakefulness when activated by orexin peptides
-- Blocking both OX1R and OX2R simultaneously reduces wake-promoting signals
-- This allows natural sleep mechanisms to predominate
-- Dual antagonism is preferred over single receptor targeting for complete sleep induction
-- The approach avoids dependency issues associated with GABA-targeting sleep medications
-
-RECEPTOR STRUCTURE INSIGHTS:
-- Both receptors are 7-transmembrane domain GPCRs
-- They have large, flexible binding pockets that can accommodate diverse ligands
-- Key binding regions include transmembrane domains 3, 5, 6, and 7
-- The receptors can bind both peptide (natural) and small molecule (synthetic) ligands
-- Selectivity between OX1R and OX2R is challenging but not always necessary
-
-STRUCTURAL REQUIREMENTS FOR EFFECTIVE BINDING:
-- Molecular weight: 400-600 Da (typical for GPCR ligands)
-- Multiple hydrogen bond donors and acceptors for receptor interaction
-- Aromatic rings for π-π stacking interactions with receptor residues
-- Flexible linkers allowing conformational adaptation in binding pocket
-- Moderate lipophilicity for blood-brain barrier penetration
-- Avoid excessive polarity (will not cross BBB) or excessive lipophilicity (poor selectivity)
-
-PHARMACOPHORE FEATURES NEEDED:
-- Central scaffold: Heterocyclic core (6-membered rings with N/O preferred)
-- Aromatic substituents: Phenyl or substituted benzene rings for binding interactions
-- Polar functional groups: Amides, sulfonamides, or ureas for hydrogen bonding
-- Halogen atoms: Fluorine or chlorine can improve binding affinity and metabolic stability
-- Chiral centers: May be important for receptor selectivity and potency
-
-TARGET PROPERTIES FOR SLEEP MEDICATION:
-- Strong dual receptor binding (IC50 < 100 nM for both OX1R and OX2R)
-- High brain penetration (CSF/plasma ratio > 0.3)
-- Moderate half-life (6-8 hours for full night sleep without morning grogginess)
-- Low off-target activity (minimal binding to other neurotransmitter systems)
-- Good oral bioavailability (>50%)
-- Minimal CYP enzyme inhibition (avoid drug-drug interactions)
-
-DESIGN STRATEGY RECOMMENDATIONS:
-- Start with nitrogen-containing heterocycles as core scaffolds
-- Consider pyrimidine, pyridine, pyrazole, or quinoline as central rings
-- Add substituted phenyl groups as pendant aromatic systems
-- Include hydrogen bonding groups like amides or sulfonamides
-- Use fluorine substitution strategically for improved properties
-- Ensure molecular flexibility while maintaining some rigidity for binding
-
-AVOID THESE STRUCTURAL FEATURES:
-- Overly rigid structures (may not adapt to binding pocket)
-- Highly charged groups at physiological pH (poor BBB penetration)
-- Very lipophilic structures (may cause off-target effects)
-- Reactive electrophilic groups (potential toxicity)
-- Large molecular weight >650 Da (poor drug-like properties)
-
-SCAFFOLD INSPIRATION (choose diverse approaches):
-- Pyrimidine-based cores with aromatic substituents
-- Quinoline or isoquinoline scaffolds
-- Benzimidazole or benzothiazole systems
-- Substituted pyridines or pyrazines
-- Fused bicyclic heterocycles with appropriate substitution patterns
-
-{feedback_context}
-
-REASONING PROCESS:
-Please think through your design step by step:
-
-1. RECEPTOR BINDING STRATEGY:
-   - How will you design for dual OX1R/OX2R antagonism?
-   - What core scaffold will provide the right shape and electronics?
-   - How will you incorporate key pharmacophore features?
-
-2. BLOOD-BRAIN BARRIER PENETRATION:
-   - How will you balance polarity and lipophilicity?
-   - What molecular weight range will you target?
-   - How will you ensure CNS penetration without excessive lipophilicity?
-
-3. SELECTIVITY AND SAFETY:
-   - How will you minimize off-target effects?
-   - What structural features will you avoid?
-   - How will you design for metabolic stability?
-
-4. DRUG-LIKE PROPERTIES:
-   - How will you ensure good oral bioavailability?
-   - What functional groups will support appropriate ADMET properties?
-   - How will you design for a suitable half-life?
-
-5. MOLECULAR DIVERSITY:
-   - How will you explore different scaffold classes?
-   - What substitution patterns will you investigate?
-   - How will you avoid structural redundancy?
-
-Now generate exactly {n_molecules} diverse, complex SMILES strings targeting dual orexin receptor antagonism:
-
-SMILES: [molecule_1]
-SMILES: [molecule_2]
-...
-SMILES: [molecule_{n_molecules}]
+OUTPUT FORMAT:
+- Section per scaffold family.
+- Short reasoning paragraph.
+- Then exactly N SMILES lines, each formatted as: SMILES: (smiles string), do not include any quotation marks
 
         """
         
@@ -468,8 +398,6 @@ SMILES: [molecule_{n_molecules}]
             best_reward = self.best_molecules[0]['reward']
             if best_reward < 0.3:
                 strategy.append("- URGENT: Current designs too simple - try complex multi-ring systems")
-                strategy.append("- Explore quinolone scaffolds: C1=C(C(=O)N2CCCC2C1=O)")
-                strategy.append("- Try beta-lactam inspired structures with 4-membered rings")
             elif best_reward < 0.5:
                 strategy.append("- Moderate progress - refine current successful patterns")
                 strategy.append("- Add more polar groups to top performers")
@@ -555,7 +483,7 @@ def read_fasta(filepath):
     seq_lines = [line.strip() for line in lines if not line.startswith(">") and line.strip()]
     return "".join(seq_lines)
 
-protein_seq = read_fasta("sequences/P02918.fa")
+protein_seq = "MILFKQATYFISLFATVSCGCLTQLYENAFFRGGDVASMYTPNAQYCQMRCTFHPRCLLFSFLPASSINDMEKRFGCFLKDSVTGTLPKVHRTGAVSGHSLKQCGHQISACHRDIYKGVDMRGVNFNVSKVSSVEECQKRCTSNIRCQFFSYATQTFHKAEYRNNCLLKYSPGGTPTAIKVLSNVESGFSLKPCALSEIGCHMNIFQHLAFSDVDVARVLTPDAFVCRTICTYHPNCLFFTFYTNVWKIESQRNVCLLKTSESGTPSSSTPQENTISGYSLLTCKRTLPEPCHSKIYPGVDFGGEELNVTFVKGVNVCQETCTKMIRCQFFTYSLLPEDCKEEKCKCFLRLSMDGSPTRIAYGTQGSSGYSLRLCNTGDNSVCTTKTSTRIVGGTNSSWGEWPWQVSLQVKLTAQRHLCGGSLIGHQWVLTAAHCFDGLPLQDVWRIYSGILNLSDITKDTPFSQIKEIIIHQNYKVSEGNHDIALIKLQAPLNYTEFQKPICLPSKGDTSTIYTNCWVTGWGFSKEKGEIQNILQKVNIPLVTNEECQKRYQDYKITQRMVCAGYKEGGKDACKGDSGGPLVCKHNGMWRLVGITSWGEGCARREQPGVYTKVAEYMDWILEKTQSSDGKAQMQSPA"
 
 smiles_vocab = list("CNOPSH123456789-=()@[]")
 smiles_to_int = {ch: i + 1 for i, ch in enumerate(smiles_vocab)}
@@ -639,7 +567,7 @@ def calculate_reward(smiles_list):
 # ---------------------------
 # 5. Enhanced main reinforcement learning loop
 # ---------------------------
-def run_drug_design_rl(api_key: str, n_generations: int = 3, n_molecules_per_gen: int = 15):
+def run_drug_design_rl(api_key: str, n_generations: int = 10, n_molecules_per_gen: int = 15):
     """Enhanced RL loop for drug design with better feedback"""
     
     designer = GeminiDrugDesigner(api_key)
@@ -773,7 +701,7 @@ def run_drug_design_rl(api_key: str, n_generations: int = 3, n_molecules_per_gen
 # ---------------------------
 if __name__ == "__main__":
     # Set your Gemini API key
-    GEMINI_API_KEY = "API_KEY_HERE"
+    GEMINI_API_KEY = "API_KEY"
     
     if not GEMINI_API_KEY:
         print("❌ Please set your GEMINI_API_KEY")
@@ -785,8 +713,8 @@ if __name__ == "__main__":
             # Run the enhanced drug design process
             best_molecules = run_drug_design_rl(
                 api_key=GEMINI_API_KEY,
-                n_generations=12,  # Reasonable number for testing
-                n_molecules_per_gen=8  # Manageable batch size
+                n_generations=4,  # Reasonable number for testing
+                n_molecules_per_gen=12  # Manageable batch size
             )
             
             # Enhanced result saving
@@ -798,7 +726,7 @@ if __name__ == "__main__":
                 "metadata": {
                     "timestamp": timestamp,
                     "total_molecules": len(best_molecules),
-                    "generations": 12,
+                    "generations": 3,
                     "molecules_per_generation": 8
                 },
                 "best_molecules": best_molecules
