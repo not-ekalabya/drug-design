@@ -701,7 +701,7 @@ def run_drug_design_rl(api_key: str, n_generations: int = 10, n_molecules_per_ge
 # ---------------------------
 if __name__ == "__main__":
     # Set your Gemini API key
-    GEMINI_API_KEY = "API_KEY"
+    GEMINI_API_KEY = "YOUR_KEY_HERE"
     
     if not GEMINI_API_KEY:
         print("❌ Please set your GEMINI_API_KEY")
